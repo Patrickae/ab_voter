@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as LinkRouter } from 'react-router-dom';
+import { userSignup } from '../../api/authRequests';
 
 function Copyright(props) {
   return (
@@ -33,13 +34,18 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const newUser = {
       email: data.get('email'),
       password: data.get('password'),
-    });
+      username: data.get('username'),
+    };
+    console.log(newUser);
+
+    const newUserSignup = await userSignup(newUser.username, newUser.email, newUser.password);
+    console.log(newUserSignup);
   };
 
   return (
@@ -62,25 +68,15 @@ export default function SignUp() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
-                  autoComplete="given-name"
-                  name="firstName"
+                  autoComplete="user-name"
+                  name="username"
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
+                  id="username"
+                  label="Username"
                   autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -104,12 +100,12 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
                   label="I want to receive inspiration, marketing promotions and updates via email."
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
             <Button
               type="submit"
