@@ -1,8 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
-const saltRounds = 10;
-
 const handleErrors = (err) => {
   console.log(Object.values(err.errors), err.code);
 
@@ -21,14 +19,11 @@ module.exports.signupGet = (req, res) => {
 module.exports.signupPost = async (req, res) => {
   const { email, password, username } = req.body;
   try {
-    bcrypt.genSalt(saltRounds, (err, salt) => {
-      bcrypt.hash(password, salt, async (err, hash) => {
-        const user = await User.create({ email, password: hash, username });
-        res.status(201).json(user);
-      });
-    });
+    const user = await User.create({ email, password, username });
+    res.status(201).json(user);
   } catch (err) {
-    res.status(400).json({ errors: handleErrors(err) });
+    // res.status(400).json({ errors: handleErrors(err) });
+    console.log(err);
   }
 };
 
